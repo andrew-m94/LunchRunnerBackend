@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'orders.apps.OrdersConfig',
     'lunchgroups.apps.LunchGroupsConfig',
+    'payments'
 ]
 
 MIDDLEWARE = [
