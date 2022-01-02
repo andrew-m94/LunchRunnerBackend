@@ -10,6 +10,9 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 class StripeCheckoutView(APIView):
     def post(self, request):
+
+        customAmount = request.data["unit_amount"]
+
         try:
             checkout_session = stripe.checkout.Session.create(
                 line_items=[
@@ -19,7 +22,7 @@ class StripeCheckoutView(APIView):
                             'product_data': {
                                 'name': 'Your Order',
                             },
-                            'unit_amount': 200,
+                            "unit_amount": customAmount,
                         },
                         'quantity': 1,
                     },
