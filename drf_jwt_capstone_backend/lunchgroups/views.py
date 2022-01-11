@@ -47,3 +47,13 @@ def runner_lunch_group(request):
         groups = LunchGroup.objects.filter(user_id = request.user.id)
         groups.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def update_status(request, pk):
+    group = LunchGroup.objects.filter(id = pk).first()
+    serializer = LunchGroupSerializer(group, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save(user = request.user)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

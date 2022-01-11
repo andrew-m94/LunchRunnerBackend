@@ -4,4 +4,5 @@ from lunchgroups import views
 urlpatterns = [
     path('all/', views.get_all_lunch_groups),
     path('runner/', views.runner_lunch_group),
+    path('runner/<int:pk>/', views.update_status),
 ]
