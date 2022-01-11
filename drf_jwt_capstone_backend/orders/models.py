@@ -9,4 +9,5 @@ class Order(models.Model):
     order_content = models.CharField(max_length = 500)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     notes = models.CharField(max_length = 500, null=True)
+    status = models.CharField(max_length = 20, default = "Unpaid")
 
