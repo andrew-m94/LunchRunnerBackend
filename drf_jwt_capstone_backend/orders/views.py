@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from .models import Order
-from .serializers import OrderSerializer
+from .serializers import OrderCreateSerializer, OrderViewSerializer
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -15,14 +15,14 @@ User = get_user_model()
 @permission_classes([IsAuthenticated])
 def get_all_orders(request):
     orders = Order.objects.all()
-    serializer = OrderSerializer(orders, many=True)
+    serializer = OrderViewSerializer(orders, many=True)
     return Response(serializer.data)
 
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def user_orders(request):
     if request.method == 'POST':
-        serializer = OrderSerializer(data=request.data)
+        serializer = OrderCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user = request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -30,14 +30,14 @@ def user_orders(request):
 
     elif request.method == 'GET':
         orders = Order.objects.filter(user_id = request.user.id)
-        serializer = OrderSerializer(orders, many=True)
+        serializer = OrderViewSerializer(orders, many=True)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
         orders = Order.objects.filter(user_id = request.user.id)
         for order in orders:
             order = order
-        serializer = OrderSerializer(order, data=request.data)
+        serializer = OrderCreateSerializer(order, data=request.data)
         if serializer.is_valid():
             serializer.save(user = request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -52,7 +52,7 @@ def user_orders(request):
 @permission_classes([IsAuthenticated])
 def update_status(request, pk):
     order = Order.objects.filter(id = pk).first()
-    serializer = OrderSerializer(order, data=request.data, partial=True)
+    serializer = OrderCreateSerializer(order, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save(user = request.user)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
